@@ -183,12 +183,26 @@ template<typename Type>
 void BinarySearchTree<Type>::postorder(Node<Type>* node, std::function<void(Node<Type>*)> proc) {
 	
 	//********* TODO **********
+	if (node == nullptr) {
+		return;
+	}
+
+	postorder(node->left(), proc);
+	postorder(node->right(), proc);
+	proc(node);
 
 }
 template<typename Type>
 void BinarySearchTree<Type>::preorder(Node<Type>* node, std::function<void(Node<Type>*)> proc) {
 
 	//********* TODO **********
+	if (node == nullptr) {
+		return;
+	}
+
+	proc(node);
+	preorder(node->left(), proc);
+	preorder(node->right(), proc);
 
 }
 
@@ -198,7 +212,18 @@ template<typename Type>
 Node<Type>* BinarySearchTree<Type>::insert(Node<Type>* node, Type value) {
 
 	//********* TODO **********
-	return nullptr;
+	if (node == nullptr) {
+		return new Node<Type>(value, nullptr, nullptr);
+	}
+	
+	if (value < node->value()) {
+		node->left(insert(node->left(), value));
+	}
+	else if (value > node->value()) {
+		node->right(insert(node->right(), value));
+	}
+
+	return node;
 
 }
 
@@ -207,7 +232,18 @@ template<typename Type>
 bool BinarySearchTree<Type>::search(Node<Type>* node, Type value) const {
 
 	//********* TODO **********
-	return false;
+	if (node == nullptr) {
+		return node;
+	}
+	else if (value == node->value()) {
+		return node;
+	}
+	else if (value < node->value()) {
+		return search(node->left(), value);
+	}
+	else {
+		return search(node->right(), value);
+	}
 }
 
 // BinarySearchTree<Type>::height
@@ -215,16 +251,28 @@ bool BinarySearchTree<Type>::search(Node<Type>* node, Type value) const {
 // An empty tree has height 0;
 template<typename Type>
 int	BinarySearchTree<Type>::height(Node<Type>* node) const {
-
 	//********* TODO **********
-	return -9000;
+	if (node == nullptr) {
+		return 0;	//empty tree has height 0
+	}
+
+	return std::max(height(node->left()), height(node->right())) + 1;	//return max height +1
 }
+
 // BinarySearchTree<Type>::min recursively obtain the node with the minimum value
 template<typename Type>
 Node<Type>* BinarySearchTree<Type>::min(Node<Type>* node) const {
 
 	//********* TODO **********
-	return nullptr;
+	if (node == nullptr) {
+		return node;
+	}
+	
+	if (node->left() == nullptr) {
+		return node;
+	}
+
+	return min(node->left());
 }
 
 // BinarySearchTree<Type>::max recursively obtain the node with the minimum value
@@ -232,7 +280,15 @@ template<typename Type>
 Node<Type>* BinarySearchTree<Type>::max(Node<Type>* node) const {
 
 	//********* TODO **********
-	return nullptr;
+	if (node == nullptr) {
+		return node;
+	}
+
+	if (node->right() == nullptr) {
+		return node;
+	}
+
+	return max(node->right());
 }
 
 // BinarySearchTree<Type>::printTree
@@ -252,6 +308,20 @@ template<typename Type>
 void BinarySearchTree<Type>::printTree(Node<Type>* node, int space) const {
 
 	//********* TODO **********
+	if (node == nullptr) {
+		return;
+	}
+	//space increase per recursion
+	space += 5;
+
+	printTree(node->right(), space);
+
+	for (int i = 0; i < space; i++) {
+		std::cout << " ";
+	}
+
+	std::cout << node->value() << std::endl;
+	printTree(node->left(), space);
 
 }
 
@@ -294,6 +364,17 @@ void BinarySearchTree<Type>::report() const {
 	//********* TODO **********
 	std::string msg = "Analysis";
 	std::cout << msg << std::endl;
+
+	std::cout << "Height: " << height() << std::endl;
+
+	if (!empty()) {
+		std::cout << "Min: " << min() << std::endl;
+		std::cout << "Max: " << max() << std::endl;
+	}
+	else {
+		std::cout << "Empty, no Max and Min" << std::endl;
+	}
+	
 }
 
 
