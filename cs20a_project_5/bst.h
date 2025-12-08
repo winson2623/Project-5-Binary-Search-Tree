@@ -354,7 +354,48 @@ template<typename Type>
 Node<Type>* BinarySearchTree<Type>::remove(Node<Type>* node, Type value) {
 
 	//********* TODO **********
-	return nullptr;
+	if (node == nullptr){
+		return node;
+	}
+
+	//value less than node, delete from left sub tree
+	if (value < node->value()){
+		node->left( remove(node->left(), value) );
+	}
+	//value more than node, delete from right sub tree
+	else if (value > node->value()){
+		node->right( remove(node->right(), value) );
+	}
+	//value is equal to node's value
+	else {
+		//1. when item to delete is leaf
+		if (node->left() == nullptr && node->right() == nullptr){
+			delete node;
+			return nullptr;
+		}
+		
+		//2. when item to delete has 1 child
+		if (node->left() != nullptr && node->right() == nullptr){
+			Node<Type>* temp = node->left();
+			delete node;
+			return temp;
+		}
+		if (node->left() == nullptr && node->right() != nullptr){
+			Node<Type>* temp = node->right();
+			delete node;
+			return temp;
+		}
+			
+		//3. when item to delete has 2 children
+		//replaces node with right subtree's min node
+		//can also replace node with left subtree's max node, both works the same
+		else{
+			Node<Type>* replaceWithMin = min(node->right());
+			node->value() = replaceWithMin->value();
+			node->right(remove(node->right(), replaceWithMin->value()));
+		}
+	}
+	return node;
 }
 
 // BinarySearchTree<Type>::report
