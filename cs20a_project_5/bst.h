@@ -222,6 +222,9 @@ Node<Type>* BinarySearchTree<Type>::insert(Node<Type>* node, Type value) {
 	else if (value > node->value()) {
 		node->right(insert(node->right(), value));
 	}
+	else {  // when value == node->value()
+		node->left(insert(node->left(), value));
+	}
 
 	return node;
 
@@ -233,10 +236,10 @@ bool BinarySearchTree<Type>::search(Node<Type>* node, Type value) const {
 
 	//********* TODO **********
 	if (node == nullptr) {
-		return node;
+		return false;
 	}
 	else if (value == node->value()) {
-		return node;
+		return true;
 	}
 	else if (value < node->value()) {
 		return search(node->left(), value);
@@ -368,13 +371,13 @@ Node<Type>* BinarySearchTree<Type>::remove(Node<Type>* node, Type value) {
 	}
 	//value is equal to node's value
 	else {
-		//1. when item to delete is leaf
+		//CASE 1: when item to delete is leaf
 		if (node->left() == nullptr && node->right() == nullptr){
 			delete node;
 			return nullptr;
 		}
 		
-		//2. when item to delete has 1 child
+		//CASE 2: when item to delete has 1 child
 		if (node->left() != nullptr && node->right() == nullptr){
 			Node<Type>* temp = node->left();
 			delete node;
@@ -386,12 +389,12 @@ Node<Type>* BinarySearchTree<Type>::remove(Node<Type>* node, Type value) {
 			return temp;
 		}
 			
-		//3. when item to delete has 2 children
+		//CASE 3: when item to delete has 2 children
 		//replaces node with right subtree's min node
 		//can also replace node with left subtree's max node, both works the same
 		else{
 			Node<Type>* replaceWithMin = min(node->right());
-			node->value() = replaceWithMin->value();
+			node->value(replaceWithMin->value());
 			node->right(remove(node->right(), replaceWithMin->value()));
 		}
 	}
@@ -403,20 +406,12 @@ template<typename Type>
 void BinarySearchTree<Type>::report() const {
 
 	//********* TODO **********
-	std::string msg = "Analysis";
-	std::cout << msg << std::endl;
+	std::cout << "When insert sizes are small, both BST and STL::set's performance is similar." << std::endl;
+	std::cout << "Once insert sizes grow, BST (in order inserts) performance becomes poor due to being unbalanced." << std::endl;
+	std::cout << "BST then becomes closer to Linked List O(n) and has deep recursions." << std::endl;
+	std::cout << "STL::set's performance is consistent with the size, because it is self balancing, closer to O(log n)." << std::endl;
 
-	std::cout << "Height: " << height() << std::endl;
-
-	if (!empty()) {
-		std::cout << "Min: " << min() << std::endl;
-		std::cout << "Max: " << max() << std::endl;
-	}
-	else {
-		std::cout << "Empty, no Max and Min" << std::endl;
-	}
-	
-}
+}	
 
 
 
